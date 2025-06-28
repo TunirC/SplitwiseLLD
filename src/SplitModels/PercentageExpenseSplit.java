@@ -3,19 +3,18 @@ package SplitModels;
 import Entities.User;
 
 public class PercentageExpenseSplit extends UserExpenseSplit {
-    private double amountPerHead;
+    private double percentage;
 
-    public PercentageExpenseSplit(User user, double totalAmount) {
-        super(user, totalAmount);
+    public PercentageExpenseSplit(User user, double percentage) {
+        super(user, 0);
+        this.percentage = percentage;
     }
 
-    public double getAmountPerHead() {
-        return amountPerHead;
+    public double getPercentage() {
+        return percentage;
     }
 
-    public void setAmountPerHead(double amountPerHead) {
-        this.amountPerHead = amountPerHead;
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
     }
-
-
 }

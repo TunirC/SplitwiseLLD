@@ -5,8 +5,9 @@ import Entities.User;
 public class ExactExpenseSplit extends UserExpenseSplit {
     private double amountPerHead;
 
-    public ExactExpenseSplit(User user, double totalAmount) {
-        super(user, totalAmount);
+    public ExactExpenseSplit(User user, double amountPerHead) {
+        super(user, 0);
+        this.amountPerHead = amountPerHead;
     }
 
     public double getAmountPerHead() {

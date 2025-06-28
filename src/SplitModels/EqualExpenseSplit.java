@@ -5,8 +5,9 @@ import Entities.User;
 public class EqualExpenseSplit extends UserExpenseSplit {
     private double amountPerHead;
 
-    public EqualExpenseSplit(User user, double totalAmount) {
-        super(user, totalAmount);
+    public EqualExpenseSplit(User user, double amountPerHead) {
+        super(user, 0);
+        this.amountPerHead = amountPerHead;
     }
 
     public double getAmountPerHead() {
