@@ -69,32 +69,50 @@ public class SplitwiseService {
             return;
         }
 
-        balanceSheet.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equals(user.getUserName()))
-                .map(Map.Entry::getValue)
-                .flatMap(userBalance -> userBalance.entrySet().stream())
-                .forEach(userBalance -> {
-                    if(userBalance.getValue() > 0) {
-                        System.out.println("User: "+user.getUserName()+" => "+userBalance.getValue()+" balance owed by user: "+userBalance.getKey());
-                    } else if (userBalance.getValue() < 0) {
-                        System.out.println("User: "+user.getUserName()+" => "+userBalance.getValue()+" balance owed to user: "+userBalance.getKey());
-                    }
-                });
+        balanceSheet.get(user.getUserName()).forEach((key, value) -> {
+            if (value > 0) {
+                System.out.println("User: "+user.getUserName()+" => +"+ value + " balance owed by user: "+key);
+            } else if (value < 0) {
+                System.out.println("User: "+user.getUserName()+" => "+ value + " balance owed to user: "+key);
+            }
+        });
     }
 
     public void getAllBalance() {
-        balanceSheet.entrySet()
-                .forEach(user -> {
-                    String username = user.getKey();
-                    user.getValue().entrySet().stream().forEach(userEntries -> {
-                        double amount = userEntries.getValue();
-                        if (amount > 0) {
-                            System.out.println("User: "+username+" => "+ amount + " balance owed by user: "+userEntries.getKey());
-                        } else if (amount < 0) {
-                            System.out.println("User: "+username+" => "+ amount + " balance owed to user: "+userEntries.getKey());
-                        }
-                    });
-                });
+        balanceSheet.forEach((keyUser, val) -> {
+            val.forEach((user, amount) -> {
+                if (amount > 0) {
+                    System.out.println("User: " + keyUser + " => +" + amount + " balance owed by user: " + user);
+                } else if (amount < 0) {
+                    System.out.println("User: " + keyUser + " => " + amount + " balance owed to user: " + user);
+                }
+            });
+        });
+    }
+
+    public void settleUp(User user) {
+        String userName = user.getUserName();
+        Map<String, Double> userBalances = balanceSheet.get(userName);
+
+        if (userBalances == null || userBalances.isEmpty()) {
+            System.out.println("No balances to settle for user: " + userName);
+            return;
+        }
+
+        for (Map.Entry<String, Double> entry : userBalances.entrySet()) {
+            String owedTo = entry.getKey();
+            double amount = entry.getValue();
+
+            if (amount > 0) {
+                userBalances.put(owedTo, 0.0);
+
+                Map<String, Double> reverseMap = balanceSheet.getOrDefault(owedTo, new HashMap<>());
+                reverseMap.put(userName, 0.0);
+                balanceSheet.put(owedTo, reverseMap);
+            }
+        }
+
+        balanceSheet.put(userName, userBalances);
+        System.out.println("All balances settled for user: " + userName);
     }
 }
